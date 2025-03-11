@@ -87,3 +87,4 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         expense_split = self.get(id)
         if expense_split:
             self.session.delete(expense_split)
+            
