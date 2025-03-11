@@ -7,12 +7,12 @@ name = "pypi"
 fastapi = "*"
 uvicorn = "*"
 pydantic = "*"
-sqlalchemy = "*"
 typing = "*"
 python-dotenv = "*"
 psycopg2-binary = "*"
 alembic = "*"
 pre-commit = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
