@@ -102,4 +102,7 @@ class UserRepository(BaseRepository[User]):
             id (UUID): The unique identifier of the user.
 
         """
-        self.session.query(User).filter(User.id == id).delete()
+        group = self.get(id)
+
+        if group:
+            self.session.delete(group)
