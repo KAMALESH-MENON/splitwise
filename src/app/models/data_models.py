@@ -61,7 +61,7 @@ class GroupUser(Base):
 class Expense(Base):
     __tablename__ = "expenses"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
     total_amount = Column(DECIMAL, nullable=False)
     description = Column(Text, nullable=True)
     expense_type = Column(
