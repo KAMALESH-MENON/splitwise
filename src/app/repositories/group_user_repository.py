@@ -3,6 +3,7 @@ from typing import List, Optional
 from uuid import UUID 
 from .base_repository import BaseRepository
 from ..models.data_models import GroupUser
+from sqlalchemy import asc , desc
 
 
 class GroupUserRepository(BaseRepository[GroupUser]):
@@ -28,7 +29,8 @@ class GroupUserRepository(BaseRepository[GroupUser]):
         group_id: Optional[UUID] = None,
         user_id: Optional[UUID] = None,
         joined_at: Optional[datetime] = None,
-        sort_by: Optional[str] = None
+        sort_by: Optional[str] = None,
+        order: Optional[str] = "asc"
     ) -> List[GroupUser]:
         """
         Retrieve all GroupUser records with optional filters and sorting.
@@ -57,7 +59,10 @@ class GroupUserRepository(BaseRepository[GroupUser]):
             query = query.filter(GroupUser.group_id == group_id, GroupUser.user_id == user_id)
 
         if sort_by:
-            query = query.order_by(getattr(GroupUser, sort_by))
+            if order == "asc":
+                query = query.order_by(asc(getattr(GroupUser, sort_by)))
+            else:
+                query = query.order_by(desc(getattr(GroupUser, sort_by)))
 
         return query.all()
 
