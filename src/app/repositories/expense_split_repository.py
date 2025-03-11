@@ -6,6 +6,10 @@ from app.models.data_models import ExpenseSplit
 from app.repositories.base_repository import BaseRepository
 
 class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
+    """
+    Repository for managing ExpenseSplit entities.
+    Provides methods for CRUD operations and querying by various filters.
+    """
 
     def get(self, id: UUID) -> Optional[ExpenseSplit]:
         """
@@ -87,4 +91,3 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         expense_split = self.get(id)
         if expense_split:
             self.session.delete(expense_split)
-            
