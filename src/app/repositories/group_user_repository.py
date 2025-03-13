@@ -40,6 +40,7 @@ class GroupUserRepository(BaseRepository[GroupUser]):
             user_id (Optional[UUID]): If provided, filters results by user ID.
             joined_at (Optional[datetime]): If provided, filters results by the exact join date.
             sort_by (Optional[str]): If provided, sorts results by the specified attribute.
+            order (Optional[str]): If provided, specifies the sorting order ("asc" or "desc").
 
         Returns:
             List[GroupUser]: A list of GroupUser instances matching the filters.
@@ -55,11 +56,9 @@ class GroupUserRepository(BaseRepository[GroupUser]):
         if joined_at:
             query = query.filter(GroupUser.joined_at == joined_at)
 
-        if sort_by:
-            if order == "asc":
-                query = query.order_by(asc(getattr(GroupUser, sort_by)))
-            else:
-                query = query.order_by(desc(getattr(GroupUser, sort_by)))
+        if sort_by and hasattr(GroupUser, sort_by):
+            column = getattr(GroupUser, sort_by)
+            query = query.order_by(asc(column) if order.lower() == "asc" else desc(column))
 
         return query.all()
 
