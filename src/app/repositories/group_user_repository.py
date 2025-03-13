@@ -55,9 +55,6 @@ class GroupUserRepository(BaseRepository[GroupUser]):
         if joined_at:
             query = query.filter(GroupUser.joined_at == joined_at)
 
-        if group_id and user_id:
-            query = query.filter(GroupUser.group_id == group_id, GroupUser.user_id == user_id)
-
         if sort_by:
             if order == "asc":
                 query = query.order_by(asc(getattr(GroupUser, sort_by)))
