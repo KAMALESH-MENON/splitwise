@@ -103,7 +103,7 @@ class GroupRepository(BaseRepository[Group]):
         Delete a Group from the database.
 
         Parameters:
-            group_id (UUID): The unique identifier of the group to delete.
+            id (UUID): The unique identifier of the group to delete.
         """
         group = self.get(id)
 
