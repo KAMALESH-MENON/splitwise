@@ -28,7 +28,6 @@ class GroupRepository(BaseRepository[Group]):
 
     def get_all(
         self,
-        id: Optional[UUID] = None,
         name: Optional[str] = None,
         type: Optional[str] = None,
         created_by: Optional[UUID] = None,
@@ -40,9 +39,8 @@ class GroupRepository(BaseRepository[Group]):
         Retrieve all groups with optional filtering and sorting.
 
         Parameters:
-            id (Optional[UUID]): Filter by group ID.
-            name (Optional[str]): Filter by group name.
-            type (Optional[str]): Filter by group type.
+            name (Optional[str]): Filter by group name (case-insensitive partial match).
+            type (Optional[str]): Filter by group type (case-insensitive partial match).
             created_by (Optional[UUID]): Filter by creator's UUID.
             created_at (Optional[datetime]): Filter by creation date.
             sort_by (Optional[str]): Column name to sort results by.
@@ -53,14 +51,11 @@ class GroupRepository(BaseRepository[Group]):
         """
         query = self.session.query(Group)
 
-        if id:
-            query = query.filter(Group.id == id)
-
         if name:
-            query = query.filter(Group.name == name)
+            query = query.filter(Group.name.ilike(f"%{name}%"))
 
         if type:
-            query = query.filter(Group.type == type)
+            query = query.filter(Group.type.ilike(f"%{type}%"))
 
         if created_by:
             query = query.filter(Group.created_by == created_by)
