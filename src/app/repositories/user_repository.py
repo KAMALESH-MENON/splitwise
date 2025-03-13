@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
@@ -30,7 +31,7 @@ class UserRepository(BaseRepository[User]):
         id: UUID = None,
         name: str = None,
         phone: str = None,
-        created_at: str = None,
+        created_at: datetime = None,
         sort_by: str = None,
         order: str = "asc",
     ) -> list[User]:
@@ -41,37 +42,34 @@ class UserRepository(BaseRepository[User]):
             id (UUID, optional): Filter by user ID.
             name (str, optional): Filter by user name.
             phone (str,optional): Filter by phone
-            created_at(str,optional):Filter by time of creation
+            created_at(datetime,optional):Filter by time of creation
             sort_by (str, optional): Column name to sort by.
             order (str, optional): Sorting order ('asc' or 'desc'). Defaults to 'asc'.
 
         Returns:
             List[User]: A list of user records.
         """
-        users = self.session.query(User).all()
+        query = self.session.query(User)
 
         if id:
-            users = self.session.query(User).filter(User.id == id)
+            query = query.filter(User.id == id)
 
         if name:
-            users = self.session.query(User).filter(User.name == name)
+            query = query.filter(User.name == name)
 
         if phone:
-            users = self.session.query(User).filter(User.phone == phone)
+            query = query.filter(User.phone == phone)
 
         if created_at:
-            users = self.session.query(User).filter(User.created_at == created_at)
+            query = query.filter(User.created_at == created_at)
 
-        if sort_by:
-            if hasattr(User, sort_by):
-                column = getattr(User, sort_by)
-                users = self.session.query(User).order_by(
-                    desc(column) if order.lower() == "desc" else column
-                )
+        if sort_by and hasattr(User, sort_by):
+            column = getattr(User, sort_by)
+            query = query.order_by(desc(column) if order.lower() == "desc" else column)
 
-        return users
+        return query.all()
 
-    def add(self, **kwargs) -> User:
+    def add(self, **kwargs) -> None:
         """
         Add a new user to the database.
 
@@ -79,7 +77,7 @@ class UserRepository(BaseRepository[User]):
             kwargs: Key value pairs of the attributes to update
         """
         user = User(**kwargs)
-        return self.session.add(user)
+        self.session.add(user)
 
     def update(self, id: UUID, **kwargs) -> None:
         """
