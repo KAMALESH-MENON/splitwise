@@ -34,18 +34,17 @@ class SettlementRepository(BaseRepository[Settlements]):
         """
         Fetch all settlements with optional filtering and sorting.
 
-        param payer_id: (Optional) UUID of the payer to filter settlements.
-        param payee_id: (Optional) UUID of the payee to filter settlements.
-        param expense_split_id: (Optional) UUID of the associated expense split.
-        param is_settled: (Optional) Boolean to filter settlements by their status.
-        param sort_by: (Optional) Field name to sort results (e.g., 'created_at').
-        param order: (Optional) Sorting order, "asc" (default) or "desc".
+        param payer_id:  UUID of the payer to filter settlements. Default is None.
+        param payee_id:  UUID of the payee to filter settlements. Default is None.
+        param expense_split_id: UUID of the associated expense split. Default is None.
+        param is_settled:  Boolean to filter settlements by their status. Default is None.
+        param sort_by:  Field name to sort results (e.g., 'created_at'). Default is None.
+        param order:  Sorting order, "asc" (default) or "desc".
         return: A list of settlements matching the filters.
         """
 
         query = self.session.query(Settlements)
 
-        # Apply filters if provided
         if payer_id:
             query = query.filter(Settlements.payer_id == payer_id)
         if payee_id:
@@ -55,7 +54,7 @@ class SettlementRepository(BaseRepository[Settlements]):
         if is_settled is not None:
             query = query.filter(Settlements.is_settled == is_settled)
 
-        # Apply sorting if requested
+
 
         if sort_by and hasattr(Settlements, sort_by):
             column = getattr(Settlements, sort_by)
