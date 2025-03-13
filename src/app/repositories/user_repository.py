@@ -2,8 +2,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import desc
-from sqlalchemy.orm import Session
+from sqlalchemy import desc, func
 
 from app.models.data_models import User
 from app.repositories.base_repository import BaseRepository
@@ -55,7 +54,7 @@ class UserRepository(BaseRepository[User]):
             query = query.filter(User.id == id)
 
         if name:
-            query = query.filter(User.name == name)
+            query = query.filter(func.lower(User.name).ilike(f"%{name.lower()}%"))
 
         if phone:
             query = query.filter(User.phone == phone)
@@ -100,7 +99,7 @@ class UserRepository(BaseRepository[User]):
             id (UUID): The unique identifier of the user.
 
         """
-        group = self.get(id)
+        user = self.get(id)
 
-        if group:
-            self.session.delete(group)
+        if user:
+            self.session.delete(user)
