@@ -1,9 +1,11 @@
 from typing import List, Optional
 from uuid import UUID
-from sqlalchemy.orm import Session
+
 from sqlalchemy import asc, desc
+
 from app.models.data_models import ExpenseSplit
 from app.repositories.base_repository import BaseRepository
+
 
 class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
     """
@@ -18,16 +20,18 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         :parameter id: UUID of the ExpenseSplit
         :return: ExpenseSplit object or None if not found
         """
-        return self.session.query(ExpenseSplit).filter_by(ExpenseSplit.id == id).first()
+        return self.session.query(ExpenseSplit).filter(ExpenseSplit.id == id).first()
 
-    def get_all(self,
-                id: Optional[UUID] = None,
-                amount_owed: Optional[float] = None,
-                split_type: Optional[str] = None,
-                user_id: Optional[UUID] = None,
-                expense_id: Optional[UUID] = None,
-                sort_by: Optional[str] = None,
-                order: Optional[str] = "asc") -> List[ExpenseSplit]:
+    def get_all(
+        self,
+        id: Optional[UUID] = None,
+        amount_owed: Optional[float] = None,
+        split_type: Optional[str] = None,
+        user_id: Optional[UUID] = None,
+        expense_id: Optional[UUID] = None,
+        sort_by: Optional[str] = None,
+        order: Optional[str] = "asc",
+    ) -> List[ExpenseSplit]:
         """
         Retrieve all ExpenseSplits matching the given filters.
 
@@ -41,7 +45,7 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         :return: List of matching ExpenseSplit objects
         """
         query = self.session.query(ExpenseSplit)
-        
+
         if id:
             query = query.filter(ExpenseSplit.id == id)
         if amount_owed:
@@ -52,13 +56,13 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
             query = query.filter(ExpenseSplit.user_id == user_id)
         if expense_id:
             query = query.filter(ExpenseSplit.expense_id == expense_id)
-        
+
         if sort_by:
             if order == "asc":
                 query = query.order_by(asc(getattr(ExpenseSplit, sort_by)))
             else:
                 query = query.order_by(desc(getattr(ExpenseSplit, sort_by)))
-        
+
         return query.all()
 
     def add(self, **kwargs: object) -> None:
