@@ -64,7 +64,7 @@ class ExpenseRepository(BaseRepository[Expense]):
         query = query.offset((page - 1) * page_size).limit(page_size)
         return query.all()
 
-    def get(self, id: UUID) -> Expense:
+    def get(self, id: UUID) -> Optional[Expense]:
         """
         Retrieves a single expense by its ID.
 
@@ -72,7 +72,7 @@ class ExpenseRepository(BaseRepository[Expense]):
             id: Expense ID
 
         Returns:
-        Expense object or None if not found
+        Expense object if found, otherwise None.
         """
         expense = self.session.query(Expense).filter(Expense.id == id).first()
         return expense
@@ -82,7 +82,7 @@ class ExpenseRepository(BaseRepository[Expense]):
         Adds a new expense to the database.
 
         Parameter:
-            kwargs: Dictionary of fields to create a new expense
+            kwargs: Dictionary of fields to create an Expense record.
         """
         expense = Expense(**kwargs)
         self.session.add(expense)
