@@ -59,7 +59,7 @@ class ExpenseRepository(BaseRepository[Expense]):
 
         if sort_by and hasattr(Expense, sort_by):
             column = getattr(Expense, sort_by)
-            query = query.order_by(column.asc() if order_by == "asc" else column.desc())
+            query = query.order_by(asc(column) if order_by == "asc" else desc(column))
 
         query = query.offset((page - 1) * page_size).limit(page_size)
         return query.all()
@@ -82,8 +82,7 @@ class ExpenseRepository(BaseRepository[Expense]):
         Adds a new expense to the database.
 
         Parameter:
-            expense: Expense object to add
-            kwargs: Dictionary of fields to update
+            kwargs: Dictionary of fields to create a new expense
         """
         expense = Expense(**kwargs)
         self.session.add(expense)
@@ -101,7 +100,7 @@ class ExpenseRepository(BaseRepository[Expense]):
             for key, value in kwargs.items():
                 setattr(expense, key, value)
 
-    def delete_expense(self, id: UUID) -> None:
+    def delete(self, id: UUID) -> None:
         """
         Deletes an expense from the database.
 
