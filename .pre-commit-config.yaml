@@ -1,0 +1,38 @@
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    - id: check-yaml
+      exclude: .backstage
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+    - id: black
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: isort (python)
+        args: ["--profile", "black"]
+  - repo: https://github.com/PyCQA/autoflake
+    rev: '11fda5403b1cd8029e98130bec7c8f46793cad5c'
+    hooks:
+      - id: autoflake
+        name: autoflake
+        entry: autoflake
+        language: python
+        "types": [python]
+        require_serial: true
+        args:
+          - "--in-place"
+          - "--expand-star-imports"
+          - "--remove-duplicate-keys"
+          - "--remove-unused-variables"
+  - repo: https://github.com/pycqa/flake8
+    rev: '14c5edf3365b70b5c3c054453d66d0c73cee5c3a'
+    hooks:
+    - id: flake8
