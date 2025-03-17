@@ -41,7 +41,7 @@ class UserRepository(BaseRepository[User]):
         if phone:
             return query.filter(User.phone == phone).first()
 
-        return None  # If neither `id` nor `email` is provided
+        return None
 
     def get_all(
         self,
