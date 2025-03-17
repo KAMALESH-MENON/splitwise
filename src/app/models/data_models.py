@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 
 from sqlalchemy import (
@@ -25,7 +25,7 @@ class User(Base):
     password = Column(String, nullable=False)
     phone = Column(String, unique=True, nullable=True)
     profile_picture_url = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     groups = relationship("GroupUser", back_populates="user")
     expenses = relationship("Expense", back_populates="payer")
     expense_splits = relationship("ExpenseSplit", back_populates="user")
@@ -43,7 +43,7 @@ class Group(Base):
     name = Column(String, nullable=False)
     type = Column(Enum("trip", "home", "other", name="group_type"), nullable=False)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    joined_at = Column(DateTime, default=datetime.now(timezone.utc))
     users = relationship("GroupUser", back_populates="group")
     expenses = relationship("Expense", back_populates="group")
 
@@ -53,7 +53,7 @@ class GroupUser(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    joined_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    joined_at = Column(DateTime, default=datetime.now(timezone.utc))
     group = relationship("Group", back_populates="users")
     user = relationship("User", back_populates="groups")
 
@@ -68,7 +68,7 @@ class Expense(Base):
         Enum("GROUP", "NON-EXPENSE GROUP", name="expense_type_enum"), nullable=False
     )
     paid_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     group = relationship("Group", back_populates="expenses")
     payer = relationship("User", back_populates="expenses")
     splits = relationship("ExpenseSplit", back_populates="expense")
@@ -106,7 +106,7 @@ class Settlements(Base):
     payee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     amount = Column(DECIMAL, nullable=False)
     is_settled = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     expense_split = relationship("ExpenseSplit", back_populates="settlements")
     payer = relationship(
         "User", foreign_keys=[payer_id], back_populates="settlements_payed"
