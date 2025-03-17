@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import desc, func
+from sqlalchemy import desc
 
 from src.app.models.data_models import User
 from src.app.repositories.base_repository import BaseRepository
@@ -45,9 +45,9 @@ class UserRepository(BaseRepository[User]):
 
     def get_all(
         self,
-        name: str = None,
-        created_at: datetime = None,
-        sort_by: str = None,
+        name: Optional[str] = None,
+        created_at: Optional[datetime] = None,
+        sort_by: Optional[str] = None,
         order: str = "asc",
     ) -> list[User]:
         """
