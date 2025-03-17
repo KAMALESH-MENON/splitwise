@@ -4,8 +4,8 @@ from uuid import UUID
 
 from sqlalchemy import desc, func
 
-from app.models.data_models import User
-from app.repositories.base_repository import BaseRepository
+from src.app.models.data_models import User
+from src.app.repositories.base_repository import BaseRepository
 
 
 class UserRepository(BaseRepository[User]):
@@ -13,23 +13,39 @@ class UserRepository(BaseRepository[User]):
     Repository class for handling user-related database operations.
     """
 
-    def get(self, id: UUID) -> Optional[User]:
+    def get(
+        self,
+        id: Optional[UUID] = None,
+        email: Optional[str] = None,
+        phone: Optional[str] = None,
+    ) -> Optional[User]:
         """
-        Retrieve a user by ID.
+        Retrieve a user by ID or email.
 
         Parameters:
-            id (UUID): The unique identifier of the user.
+            id (UUID, optional): The unique identifier of the user.
+            email (str, optional): The email of the user.
+            phone (str,optional): Filter by phone
 
         Returns:
             User | None: The user record if found, else None.
         """
-        return self.session.query(User).filter(User.id == id).first()
+        query = self.session.query(User)
+
+        if id:
+            return query.filter(User.id == id).first()
+
+        if email:
+            return query.filter(User.email == email).first()
+
+        if phone:
+            return query.filter(User.phone == phone).first()
+
+        return None  # If neither `id` nor `email` is provided
 
     def get_all(
         self,
-        id: UUID = None,
         name: str = None,
-        phone: str = None,
         created_at: datetime = None,
         sort_by: str = None,
         order: str = "asc",
@@ -38,9 +54,7 @@ class UserRepository(BaseRepository[User]):
         Retrieve all users or filter by ID,name,time of creation
 
         Parameters:
-            id (UUID, optional): Filter by user ID.
             name (str, optional): Filter by user name.
-            phone (str,optional): Filter by phone
             created_at(datetime,optional):Filter by time of creation
             sort_by (str, optional): Column name to sort by.
             order (str, optional): Sorting order ('asc' or 'desc'). Defaults to 'asc'.
@@ -50,14 +64,8 @@ class UserRepository(BaseRepository[User]):
         """
         query = self.session.query(User)
 
-        if id:
-            query = query.filter(User.id == id)
-
         if name:
-            query = query.filter(func.lower(User.name).ilike(f"%{name.lower()}%"))
-
-        if phone:
-            query = query.filter(User.phone == phone)
+            query = query.filter(User.name.ilike(f"%{name}%"))
 
         if created_at:
             query = query.filter(User.created_at == created_at)
@@ -68,7 +76,7 @@ class UserRepository(BaseRepository[User]):
 
         return query.all()
 
-    def add(self, **kwargs) -> None:
+    def add(self, **kwargs: object) -> None:
         """
         Add a new user to the database.
 
@@ -78,7 +86,7 @@ class UserRepository(BaseRepository[User]):
         user = User(**kwargs)
         self.session.add(user)
 
-    def update(self, id: UUID, **kwargs) -> None:
+    def update(self, id: UUID, **kwargs: object) -> None:
         """
         Update user details.
 
