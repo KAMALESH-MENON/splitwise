@@ -23,11 +23,9 @@ class ExpenseRepository(BaseRepository[Expense]):
         expense_type: Optional[str] = None,
         sort_by: Optional[str] = None,
         order_by: str = "asc",
-        page: int = 1,
-        page_size: int = 10,
     ) -> List[Expense]:
         """
-        Retrieves all expenses with optional filters, sorting, and pagination.
+        Retrieves all expenses with optional filters and sorting.
 
         Parameters:
             group_id: Filter by group ID
@@ -37,11 +35,9 @@ class ExpenseRepository(BaseRepository[Expense]):
             expense_type: Filter by expense type
             sort_by: Field to sort by
             order_by: Sort by order ('asc' or 'desc')
-            page: Page number for pagination
-            page_size: Number of items per page
 
         Returns:
-        List of filtered, sorted, and paginated expenses
+        List of filtered and sorted expenses
         """
 
         query = self.session.query(Expense)
@@ -61,7 +57,6 @@ class ExpenseRepository(BaseRepository[Expense]):
             column = getattr(Expense, sort_by)
             query = query.order_by(asc(column) if order_by == "asc" else desc(column))
 
-        query = query.offset((page - 1) * page_size).limit(page_size)
         return query.all()
 
     def get(self, id: UUID) -> Optional[Expense]:
