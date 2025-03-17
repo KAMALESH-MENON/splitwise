@@ -53,7 +53,7 @@ def add_expense(unit_of_work: ExpenseUnitOfWork, expense_data: ExpenseCreate):
                     )
                 expense_type = ExpenseType.GROUP
 
-            new_expense = Expense(
+            uow.expense.add(
                 id=uuid4(),
                 group_id=expense_data.group_id,
                 total_amount=expense_data.total_amount,
@@ -62,8 +62,6 @@ def add_expense(unit_of_work: ExpenseUnitOfWork, expense_data: ExpenseCreate):
                 paid_by=expense_data.paid_by,
                 created_at=datetime.utcnow(),
             )
-
-            uow.expense.add(new_expense)
 
             return ExpenseCreateResponse()
 
