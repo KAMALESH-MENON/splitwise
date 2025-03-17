@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from src.app.models.data_models import Settlements
 from repositories.base_repository import BaseRepository
 
+
 class SettlementRepository(BaseRepository[Settlements]):
     """
     Repository class for handling settlement-related database operations.
