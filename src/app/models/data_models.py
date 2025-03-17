@@ -2,7 +2,6 @@ import datetime
 from uuid import uuid4
 
 from sqlalchemy import (
-    DECIMAL,
     UUID,
     Boolean,
     Column,
@@ -11,6 +10,7 @@ from sqlalchemy import (
     ForeignKey,
     String,
     Text,
+    float,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -62,7 +62,7 @@ class Expense(Base):
     __tablename__ = "expenses"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
-    total_amount = Column(DECIMAL, nullable=False)
+    total_amount = Column(float, nullable=False)
     description = Column(Text, nullable=True)
     expense_type = Column(
         Enum("GROUP", "NON-EXPENSE GROUP", name="expense_type_enum"), nullable=False
@@ -79,7 +79,7 @@ class ExpenseSplit(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     expense_id = Column(UUID(as_uuid=True), ForeignKey("expenses.id"), nullable=False)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    amount_owed = Column(DECIMAL, nullable=False)
+    amount_owed = Column(float, nullable=False)
     split_type = Column(
         Enum(
             "UNEQUALLY",
@@ -104,7 +104,7 @@ class Settlements(Base):
     )
     payer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     payee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    amount = Column(DECIMAL, nullable=False)
+    amount = Column(float, nullable=False)
     is_settled = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC))
     expense_split = relationship("ExpenseSplit", back_populates="settlements")
