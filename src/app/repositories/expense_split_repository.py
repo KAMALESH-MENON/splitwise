@@ -34,7 +34,6 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         """
         Retrieve all ExpenseSplits matching the given filters.
 
-        :parameter id: UUID of the ExpenseSplit
         :parameter amount_owed: Amount owed in the ExpenseSplit
         :parameter split_type: Type of split
         :parameter user_id: UUID of the user
