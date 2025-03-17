@@ -1,6 +1,7 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.repositories.expense_repository import ExpenseRepository
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +49,12 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class ExpenseUnitOfWork(BaseUnitOfWork):
+    """Unit of Work for managing expense-related database transactions."""
+
+    def __enter__(self):
+        super().__enter__()
+        self.expense = ExpenseRepository(session=self.session)
+        return self
