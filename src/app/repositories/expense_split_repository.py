@@ -24,7 +24,6 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
 
     def get_all(
         self,
-        id: Optional[UUID] = None,
         amount_owed: Optional[float] = None,
         split_type: Optional[str] = None,
         user_id: Optional[UUID] = None,
@@ -45,9 +44,6 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         :return: List of matching ExpenseSplit objects
         """
         query = self.session.query(ExpenseSplit)
-
-        if id:
-            query = query.filter(ExpenseSplit.id == id)
         if amount_owed:
             query = query.filter(ExpenseSplit.amount_owed == amount_owed)
         if split_type:
