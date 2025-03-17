@@ -8,6 +8,24 @@ Base = declarative_base()
 
 
 class User(Base):
+    """
+    Represents a user in the Splitwise application.
+
+    Attributes:
+        id (UUID): The unique identifier for the user.
+        name (str): The name of the user.
+        email (str): The email address of the user.
+        password (str): The password of the user.
+        phone (str, optional): The phone number of the user.
+        profile_picture_url (str, optional): The URL of the user's profile picture.
+        created_at (datetime): The timestamp when the user was created.
+        groups (relationship): The groups the user is part of.
+        expenses (relationship): The expenses the user has paid.
+        expense_splits (relationship): The expense splits associated with the user.
+        settlements_payed (relationship): The settlements the user has paid.
+        settlements_received (relationship): The settlements the user has received.
+    """
+
     __tablename__ = "users"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String, nullable=False)
@@ -28,6 +46,19 @@ class User(Base):
 
 
 class Group(Base):
+    """
+    Represents a group in the Splitwise application.
+
+    Attributes:
+        id (UUID): The unique identifier for the group.
+        name (str): The name of the group.
+        type (str): The type of the group (trip, home, other).
+        created_by (UUID): The user who created the group.
+        joined_at (datetime): The timestamp when the group was created.
+        users (relationship): The users who are part of the group.
+        expenses (relationship): The expenses associated with the group.
+    """
+
     __tablename__ = "groups"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String, nullable=False)
@@ -39,6 +70,18 @@ class Group(Base):
 
 
 class GroupUser(Base):
+    """
+    Represents the association between a user and a group.
+
+    Attributes:
+        id (UUID): The unique identifier for the association.
+        group_id (UUID): The unique identifier for the group.
+        user_id (UUID): The unique identifier for the user.
+        joined_at (datetime): The timestamp when the user joined the group.
+        group (relationship): The group associated with the user.
+        user (relationship): The user associated with the group.
+    """
+
     __tablename__ = "group_users"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=False)
@@ -49,6 +92,22 @@ class GroupUser(Base):
 
 
 class Expense(Base):
+    """
+    Represents an expense in the Splitwise application.
+
+    Attributes:
+        id (UUID): The unique identifier for the expense.
+        group_id (UUID, optional): The unique identifier for the group associated with the expense.
+        total_amount (float): The total amount of the expense.
+        description (str, optional): The description of the expense.
+        expense_type (str): The type of the expense (GROUP, NON-EXPENSE GROUP).
+        paid_by (UUID): The user who paid the expense.
+        created_at (datetime): The timestamp when the expense was created.
+        group (relationship): The group associated with the expense.
+        payer (relationship): The user who paid the expense.
+        splits (relationship): The splits associated with the expense.
+    """
+
     __tablename__ = "expenses"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
@@ -65,6 +124,20 @@ class Expense(Base):
 
 
 class ExpenseSplit(Base):
+    """
+    Represents a split of an expense in the Splitwise application.
+
+    Attributes:
+        id (UUID): The unique identifier for the expense split.
+        expense_id (UUID): The unique identifier for the expense.
+        user_id (UUID): The unique identifier for the user.
+        amount_owed (float): The amount owed by the user.
+        split_type (str): The type of the split (UNEQUALLY, EQUALLY, BY SHARES, BY PERCENTAGE, BY ADJUSTMENTS).
+        expense (relationship): The expense associated with the split.
+        user (relationship): The user associated with the split.
+        settlements (relationship): The settlements associated with the split.
+    """
+
     __tablename__ = "expense_splits"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     expense_id = Column(UUID(as_uuid=True), ForeignKey("expenses.id"), nullable=False)
@@ -87,6 +160,22 @@ class ExpenseSplit(Base):
 
 
 class Settlements(Base):
+    """
+    Represents a settlement of an expense split in the Splitwise application.
+
+    Attributes:
+        id (UUID): The unique identifier for the settlement.
+        expense_split_id (UUID): The unique identifier for the expense split.
+        payer_id (UUID): The unique identifier for the user who paid.
+        payee_id (UUID): The unique identifier for the user who received the payment.
+        amount (float): The amount of the settlement.
+        is_settled (bool): Whether the settlement is settled.
+        created_at (datetime): The timestamp when the settlement was created.
+        expense_split (relationship): The expense split associated with the settlement.
+        payer (relationship): The user who paid the settlement.
+        payee (relationship): The user who received the settlement.
+    """
+
     __tablename__ = "settlements"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     expense_split_id = Column(
