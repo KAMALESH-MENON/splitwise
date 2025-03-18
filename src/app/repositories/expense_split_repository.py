@@ -3,8 +3,8 @@ from uuid import UUID
 
 from sqlalchemy import asc, desc
 
-from app.models.data_models import ExpenseSplit
-from app.repositories.base_repository import BaseRepository
+from src.app.models.data_models import ExpenseSplit
+from src.app.repositories.base_repository import BaseRepository
 
 
 class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
@@ -43,7 +43,9 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         :return: List of matching ExpenseSplit objects
         """
         query = self.session.query(ExpenseSplit)
-        if amount_owed:
+        if amount_owed is not None:
+            if not isinstance(amount_owed, (int, float)):
+                raise ValueError("amount_owed must be a numeric value.")
             query = query.filter(ExpenseSplit.amount_owed == amount_owed)
         if split_type:
             query = query.filter(ExpenseSplit.split_type == split_type)

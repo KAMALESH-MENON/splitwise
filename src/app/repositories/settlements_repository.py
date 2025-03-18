@@ -1,8 +1,10 @@
 from typing import List, Optional
 from uuid import UUID
+
 from sqlalchemy import desc
+
 from src.app.models.data_models import Settlements
-from repositories.base_repository import BaseRepository
+from src.app.repositories.base_repository import BaseRepository
 
 
 class SettlementRepository(BaseRepository[Settlements]):

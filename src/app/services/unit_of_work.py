@@ -1,6 +1,8 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.repositories.expense_split_repository import ExpenseSplitRepository
+from src.app.repositories.settlements_repository import SettlementRepository
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +50,25 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class BalanceUnitOfWork(BaseUnitOfWork):
+    """
+    Unit of Work for managing settlements and expense splits. It provides
+    repositories to interact with these entities.
+    """
+
+    def __enter__(self):
+        """
+        Starts a new session and initializes repositories for settlements
+        and expense splits.
+
+        And it Returns:
+            The BalanceUnitOfWork instance with repositories initialized.
+        """
+        super().__enter__()
+        self.settlements = SettlementRepository(
+            self.session
+        )  # Reusing SettlementRepository
+        self.expense_splits = ExpenseSplitRepository(self.session)
+        return self
