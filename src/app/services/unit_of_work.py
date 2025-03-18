@@ -4,7 +4,7 @@ from src.app.config.database import get_db
 from src.app.repositories.user_repository import UserRepository
 
 
-class UnitOfWorkBase(ABC):
+class BaseUnitOfWork(ABC):
     """A base class implementing the Unit of Work pattern for managing database transactions."""
 
     def __init__(self, session_factory=get_db):
@@ -20,7 +20,7 @@ class UnitOfWorkBase(ABC):
         """
         Enter the runtime context, initializing a new database session.
         """
-        self.session = self.session_factory()
+        self.session = next(self.session_factory())
 
         return self
 
@@ -52,7 +52,7 @@ class UnitOfWorkBase(ABC):
         self.session.rollback()
 
 
-class UserUnitOfWork(UnitOfWorkBase):
+class UserUnitOfWork(BaseUnitOfWork):
     """
     A Unit of Work implementation for managing user-related database transactions.
     This class extends `UnitOfWorkBase` and provides a `UserRepository` instance
