@@ -27,3 +27,5 @@ typing==3.7.4.3
 typing_extensions==4.12.2
 uvicorn==0.34.0
 virtualenv==20.29.2
+email-validator
+boto3
