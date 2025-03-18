@@ -1,7 +1,17 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from sqlalchemy import UUID, Boolean, Column, DateTime, Enum, ForeignKey, String, Text
+from sqlalchemy import (
+    UUID,
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    String,
+    Text,
+)
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -54,7 +64,7 @@ class Group(Base):
         name (str): The name of the group.
         type (str): The type of the group (trip, home, other).
         created_by (UUID): The user who created the group.
-        joined_at (datetime): The timestamp when the group was created.
+        created_at (datetime): The timestamp when the group was created.
         users (relationship): The users who are part of the group.
         expenses (relationship): The expenses associated with the group.
     """
@@ -64,7 +74,7 @@ class Group(Base):
     name = Column(String, nullable=False)
     type = Column(Enum("trip", "home", "other", name="group_type"), nullable=False)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    joined_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     users = relationship("GroupUser", back_populates="group")
     expenses = relationship("Expense", back_populates="group")
 
@@ -98,7 +108,7 @@ class Expense(Base):
     Attributes:
         id (UUID): The unique identifier for the expense.
         group_id (UUID, optional): The unique identifier for the group associated with the expense.
-        total_amount (float): The total amount of the expense.
+        total_amount (Float): The total amount of the expense.
         description (str, optional): The description of the expense.
         expense_type (str): The type of the expense (GROUP, NON-EXPENSE GROUP).
         paid_by (UUID): The user who paid the expense.
@@ -111,7 +121,7 @@ class Expense(Base):
     __tablename__ = "expenses"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
-    total_amount = Column(float, nullable=False)
+    total_amount = Column(Float, nullable=False)
     description = Column(Text, nullable=True)
     expense_type = Column(
         Enum("GROUP", "NON-EXPENSE GROUP", name="expense_type_enum"), nullable=False
@@ -131,7 +141,7 @@ class ExpenseSplit(Base):
         id (UUID): The unique identifier for the expense split.
         expense_id (UUID): The unique identifier for the expense.
         user_id (UUID): The unique identifier for the user.
-        amount_owed (float): The amount owed by the user.
+        amount_owed (Float): The amount owed by the user.
         split_type (str): The type of the split (UNEQUALLY, EQUALLY, BY SHARES, BY PERCENTAGE, BY ADJUSTMENTS).
         expense (relationship): The expense associated with the split.
         user (relationship): The user associated with the split.
@@ -142,7 +152,7 @@ class ExpenseSplit(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     expense_id = Column(UUID(as_uuid=True), ForeignKey("expenses.id"), nullable=False)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    amount_owed = Column(float, nullable=False)
+    amount_owed = Column(Float, nullable=False)
     split_type = Column(
         Enum(
             "UNEQUALLY",
@@ -168,7 +178,7 @@ class Settlements(Base):
         expense_split_id (UUID): The unique identifier for the expense split.
         payer_id (UUID): The unique identifier for the user who paid.
         payee_id (UUID): The unique identifier for the user who received the payment.
-        amount (float): The amount of the settlement.
+        amount (Float): The amount of the settlement.
         is_settled (bool): Whether the settlement is settled.
         created_at (datetime): The timestamp when the settlement was created.
         expense_split (relationship): The expense split associated with the settlement.
@@ -183,7 +193,7 @@ class Settlements(Base):
     )
     payer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     payee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    amount = Column(float, nullable=False)
+    amount = Column(Float, nullable=False)
     is_settled = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     expense_split = relationship("ExpenseSplit", back_populates="settlements")
