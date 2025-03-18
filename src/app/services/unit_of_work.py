@@ -1,6 +1,7 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.repositories.user_repository import UserRepository
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +49,20 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class UserUnitOfWork(BaseUnitOfWork):
+    """
+    A Unit of Work implementation for managing user-related database transactions.
+    This class extends `UnitOfWorkBase` and provides a `UserRepository` instance
+    """
+
+    def __enter__(self):
+        """
+        Initializes the database session and sets up the user repository.
+        Returns:
+            UserUnitOfWork: The Unit of Work instance with an active session and user repository.
+        """
+        super().__enter__()
+        self.user = UserRepository(session=self.session)
+        return self
