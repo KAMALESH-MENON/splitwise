@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 
-from src.app.config.database import SessionLocal
 from src.app.schemas.user_schemas import UserCreate
 from src.app.services.unit_of_work import UserUnitOfWork
 from src.app.services.user_service import AuthService
@@ -15,7 +14,7 @@ def get_uow() -> UserUnitOfWork:
     Returns:
         UserUnitOfWork: An instance of the unit of work for database transactions.
     """
-    return UserUnitOfWork(SessionLocal)
+    return UserUnitOfWork()
 
 
 @router.post("/register")
