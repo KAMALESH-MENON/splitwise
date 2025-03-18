@@ -32,9 +32,8 @@ class UserProfileService:
         Raises:
             ValueError: If the user is not found in the database.
         """
-        with self.unit_of_work as uow:
-            user = uow.user_repository.get(id=user_id)
-            if not user:
-                raise ValueError("User not found")
+        user = self.unit_of_work.user_repository.get(id=user_id)
+        if not user:
+            raise ValueError("User not found")
 
-            return UserSchema.from_orm(user)  # Note: `from_orm` is deprecated in Pydantic v2.
+        return UserSchema.model_validate(user)  

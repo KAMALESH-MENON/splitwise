@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from src.app.services.edit_profile_services import UserProfileService
-from src.app.services.unit_of_work import UserUnitOfWork
-from src.app.config.database import get_db
-from src.app.schemas.user_profile_schema import UserSchema
 from uuid import UUID
+
+from src.app.services.edit_profile_services import UserProfileService
+from src.app.services.unit_of_work import UserUnitOfWork, get_user_uow
+from src.app.schemas.user_profile_schema import UserSchema
 
 router = APIRouter(tags=["User Profile Routes"])
 
 @router.get("/profile", response_model=UserSchema)
-def view_profile(user_id: UUID, db: Session = Depends(get_db)):
+def view_profile(user_id: UUID, unit_of_work: UserUnitOfWork = Depends(get_user_uow)):
     """
     Retrieve the profile details of a user by their unique user ID.
 
@@ -18,7 +17,7 @@ def view_profile(user_id: UUID, db: Session = Depends(get_db)):
 
     Args:
         user_id (UUID): The unique identifier of the user whose profile is to be retrieved.
-        db (Session, optional): The database session dependency, injected using FastAPI's Depends.
+        unit_of_work (UserUnitOfWork): The Unit of Work dependency injected by FastAPI.
 
     Returns:
         UserSchema: A Pydantic model containing the user's profile details.
@@ -27,10 +26,8 @@ def view_profile(user_id: UUID, db: Session = Depends(get_db)):
         HTTPException: 
             - 404 Not Found: If no user exists with the given ID.
     """
-    unit_of_work = UserUnitOfWork(session_factory=get_db)
     user_profile_service = UserProfileService(unit_of_work)
     try:
-        user = user_profile_service.get_user_profile(user_id=user_id)
-        return user
+        return user_profile_service.get_user_profile(user_id)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
