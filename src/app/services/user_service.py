@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
@@ -35,14 +35,14 @@ class AuthService:
 
             if user_repo.get(email=user.email):
                 return JSONResponse(
-                    status_code=400,
+                    status_code=409,
                     content={"error": "User with this email already exists"},
                 )
 
             # Check if phone number already exists
             if user_repo.get(phone=user.phone):
                 return JSONResponse(
-                    status_code=400,
+                    status_code=409,
                     content={"error": "User with this phone number already exists"},
                 )
 
@@ -52,7 +52,7 @@ class AuthService:
                 email=user.email,
                 phone=user.phone,
                 profile_picture_url=user.profile_picture_url,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 password=hashed_password,
             )
             return JSONResponse(
