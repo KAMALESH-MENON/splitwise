@@ -1,6 +1,7 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.models.data_models import Activity, Expense, Group
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +49,51 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class ActivityUnitOfWork(BaseUnitOfWork):
+    """A Unit of Work class for managing activity-related database transactions."""
+
+    def log_activity(self, user_id: str, group_id: str, description: str):
+        """
+        Log an activity in the database.
+
+        Parameters:
+            user_id (str): The ID of the user associated with the activity.
+            group_id (str): The ID of the group associated with the activity.
+            description (str): The description of the activity.
+        """
+        activity = Activity(user_id=user_id, group_id=group_id, description=description)
+        self.session.add(activity)
+        super().commit()
+        self.session.refresh(activity)
+
+
+class ExpenseUnitOfWork(BaseUnitOfWork):
+    """A Unit of Work class for managing expense-related database transactions."""
+
+    def add_expense(self, expense: Expense):
+        """
+        Add an expense to the database.
+
+        Parameters:
+            expense (Expense): The expense object to add.
+        """
+        self.session.add(expense)
+        super().commit()
+        self.session.refresh(expense)
+
+
+class GroupUnitOfWork(BaseUnitOfWork):
+    """A Unit of Work class for managing group-related database transactions."""
+
+    def add_group(self, group: Group):
+        """
+        Add a group to the database.
+
+        Parameters:
+            group (Group): The group object to add.
+        """
+        self.session.add(group)
+        super().commit()
+        self.session.refresh(group)
