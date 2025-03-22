@@ -1,6 +1,7 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.repositories.settlements_repository import SettlementRepository
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +49,14 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class SettleUpUnitOfWork(BaseUnitOfWork):
+    """
+    Unit of Work for handling settle-up operations.
+    """
+
+    def __enter__(self):
+        super().__enter__()
+        self.settlement_repository = SettlementRepository(self.session)
+        return self
