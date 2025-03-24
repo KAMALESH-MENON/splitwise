@@ -1,6 +1,9 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.repositories.expense_repository import ExpenseRepository
+from src.app.repositories.group_repository import GroupRepository
+from src.app.repositories.group_user_repository import GroupUserRepository
 
 
 class BaseUnitOfWork(ABC):
@@ -48,3 +51,19 @@ class BaseUnitOfWork(ABC):
         Roll back the current transaction, reverting uncommitted changes.
         """
         self.session.rollback()
+
+
+class GroupUnitOfWork(BaseUnitOfWork):
+    """
+    A Unit of Work implementation for managing database transactions related to groups.
+    """
+
+    def __enter__(self):
+        """
+        Enter the runtime context, initializing a new database session and repositories.
+        """
+        super().__enter__()
+        self.group = GroupRepository(session=self.session)
+        self.group_user = GroupUserRepository(session=self.session)
+        self.expense = ExpenseRepository(session=self.session)
+        return self
