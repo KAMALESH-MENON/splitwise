@@ -25,7 +25,7 @@ class UserProfileService:
         Fetches the user profile based on the given user ID.
 
         Args:
-            user_id (str): The unique identifier of the user.
+            user_id (UUID): The unique identifier of the user.
 
         Returns:
             UserSchema: A Pydantic schema representing the user profile.
