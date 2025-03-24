@@ -6,11 +6,9 @@ from datetime import datetime
 class UserSchema(BaseModel):
     """
     Schema for representing user data.
-
     This schema is used to validate and serialize user information, 
     ensuring type consistency when exchanging data between the database 
     and API responses.
-
     Attributes:
         id (UUID): Unique identifier for the user.
         name (str): Full name of the user.
@@ -30,9 +28,7 @@ class UserSchema(BaseModel):
     class Config:
         """
         Pydantic configuration class.
-
         Enables ORM mode to allow compatibility with SQLAlchemy models 
         and ensures attributes can be mapped from ORM objects.
         """
-        orm_mode = True
         from_attributes = True

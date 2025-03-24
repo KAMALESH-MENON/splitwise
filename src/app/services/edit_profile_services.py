@@ -1,5 +1,6 @@
 from src.app.services.unit_of_work import UserUnitOfWork
 from src.app.schemas.user_profile_schema import UserSchema
+from uuid import UUID
 
 class UserProfileService:
     """
@@ -19,7 +20,7 @@ class UserProfileService:
         """
         self.unit_of_work = unit_of_work
 
-    def get_user_profile(self, user_id: str) -> UserSchema:
+    def get_user_profile(self, user_id: UUID) -> UserSchema:
         """
         Fetches the user profile based on the given user ID.
 
