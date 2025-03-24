@@ -1,8 +1,8 @@
-"""Inital revision to create tables
+"""Adding Activity Table
 
-Revision ID: 23289cbbf519
+Revision ID: 42bf43768bc8
 Revises:
-Create Date: 2025-03-06 12:15:35.547968
+Create Date: 2025-03-24 15:23:56.480294
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "23289cbbf519"
+revision: str = "42bf43768bc8"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,11 +50,27 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_table(
+        "activities",
+        sa.Column("id", sa.UUID(), nullable=False),
+        sa.Column("description", sa.Text(), nullable=False),
+        sa.Column("timestamp", sa.DateTime(), nullable=True),
+        sa.Column("user_id", sa.UUID(), nullable=False),
+        sa.Column("group_id", sa.UUID(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["group_id"],
+            ["groups.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"],
+            ["users.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_table(
         "expenses",
         sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("group_id", sa.UUID(), nullable=False),
-        sa.Column("total_amount", sa.DECIMAL(), nullable=False),
-        sa.Column("date", sa.DateTime(), nullable=True),
+        sa.Column("group_id", sa.UUID(), nullable=True),
+        sa.Column("total_amount", sa.Float(), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column(
             "expense_type",
@@ -94,7 +110,7 @@ def upgrade() -> None:
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("expense_id", sa.UUID(), nullable=False),
         sa.Column("user_id", sa.UUID(), nullable=False),
-        sa.Column("amount_owed", sa.DECIMAL(), nullable=False),
+        sa.Column("amount_owed", sa.Float(), nullable=False),
         sa.Column(
             "split_type",
             sa.Enum(
@@ -123,7 +139,7 @@ def upgrade() -> None:
         sa.Column("expense_split_id", sa.UUID(), nullable=False),
         sa.Column("payer_id", sa.UUID(), nullable=False),
         sa.Column("payee_id", sa.UUID(), nullable=False),
-        sa.Column("amount", sa.DECIMAL(), nullable=False),
+        sa.Column("amount", sa.Float(), nullable=False),
         sa.Column("is_settled", sa.Boolean(), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
@@ -150,6 +166,7 @@ def downgrade() -> None:
     op.drop_table("expense_splits")
     op.drop_table("group_users")
     op.drop_table("expenses")
+    op.drop_table("activities")
     op.drop_table("groups")
     op.drop_table("users")
     # ### end Alembic commands ###
