@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
@@ -31,8 +31,12 @@ class UserSchema(BaseModel):
         """
         Pydantic configuration class.
 
-        Enables ORM mode to allow compatibility with SQLAlchemy models 
-        and ensures attributes can be mapped from ORM objects.
+        Enables attribute population from ORM models by mapping 
+        database fields to Pydantic model attributes.
         """
-        orm_mode = True
         from_attributes = True
+
+class ChangePasswordSchema(BaseModel):
+    user_id: UUID
+    old_password: str = Field(..., min_length=8)
+    new_password: str = Field(..., min_length=8)
