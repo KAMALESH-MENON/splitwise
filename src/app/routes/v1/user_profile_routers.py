@@ -52,3 +52,4 @@ def edit_profile(
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid input: {str(e)}")
+    
