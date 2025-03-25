@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from uuid import UUID
 
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
@@ -74,10 +73,7 @@ class AuthService:
         expire = datetime.utcnow() + timedelta(minutes=expire_minutes)
         to_encode.update({"exp": expire})
 
-        if isinstance(data.get("user_id"), UUID):
-            to_encode["user_id"] = str(data["user_id"])
-        else:
-            to_encode["user_id"] = data["user_id"]
+        to_encode["user_id"] = data["user_id"]
 
         return jwt.encode(
             to_encode, app_config["SECRET_KEY"], algorithm=app_config["ALGORITHM"]
