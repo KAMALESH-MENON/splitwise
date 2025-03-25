@@ -1,6 +1,7 @@
 from abc import ABC
 
 from src.app.config.database import get_db
+from src.app.models.data_models import Activity
 from src.app.repositories.expense_repository import ExpenseRepository
 from src.app.repositories.group_repository import GroupRepository
 from src.app.repositories.user_repository import UserRepository
@@ -62,3 +63,21 @@ class ExpenseUnitOfWork(BaseUnitOfWork):
         self.user = UserRepository(session=self.session)
         self.group = GroupRepository(session=self.session)
         return self
+
+
+class ActivityUnitOfWork(BaseUnitOfWork):
+    """A Unit of Work class for managing activity-related database transactions."""
+
+    def log_activity(self, user_id: str, group_id: str, description: str):
+        """
+        Log an activity in the database.
+
+        Parameters:
+            user_id (str): The ID of the user associated with the activity.
+            group_id (str): The ID of the group associated with the activity.
+            description (str): The description of the activity.
+        """
+        activity = Activity(user_id=user_id, group_id=group_id, description=description)
+        self.session.add(activity)
+        super().commit()
+        self.session.refresh(activity)

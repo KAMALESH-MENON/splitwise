@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.app.schemas.expense_schemas import ExpenseCreate, ExpenseType
-from src.app.services.unit_of_work import ExpenseUnitOfWork
+from src.app.services.unit_of_work import ActivityUnitOfWork, ExpenseUnitOfWork
 
 
 def add_expense(unit_of_work: ExpenseUnitOfWork, expense_data: ExpenseCreate) -> dict:
@@ -32,6 +32,8 @@ def add_expense(unit_of_work: ExpenseUnitOfWork, expense_data: ExpenseCreate) ->
                     status_code=400, detail="Paid-by user does not exist."
                 )
 
+            user_name = paid_by_user.name
+
             expense_type = ExpenseType.NON_EXPENSE_GROUP
             if expense_data.group_id:
                 group_exists = uow.group.get(id=expense_data.group_id)
@@ -49,6 +51,26 @@ def add_expense(unit_of_work: ExpenseUnitOfWork, expense_data: ExpenseCreate) ->
                 paid_by=expense_data.paid_by,
                 created_at=datetime.utcnow(),
             )
+
+            with ActivityUnitOfWork() as activity_uow:
+                """
+                Logs the activity of adding an expense to the activity log.
+
+                Parameters:
+                    user_id (str): The ID of the user who added the expense.
+                    group_id (str | None): The ID of the group associated with the expense, if any.
+                    description (str): A descriptive message about the activity.
+
+                Description:
+                    This section logs the action of adding an expense to the activity log
+                    for tracking purposes. It includes details such as the user who added
+                    the expense, the group (if applicable), and a description of the expense.
+                """
+                activity_uow.log_activity(
+                    user_id=expense_data.paid_by,
+                    group_id=expense_data.group_id,
+                    description=f"{user_name} added expense '{expense_data.description}' of Rs.{expense_data.total_amount}.",
+                )
 
             return {"message": "Expense successfully added."}
 
