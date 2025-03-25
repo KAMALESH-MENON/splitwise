@@ -203,3 +203,25 @@ class Settlements(Base):
     payee = relationship(
         "User", foreign_keys=[payee_id], back_populates="settlements_received"
     )
+
+
+class Activity(Base):
+    """
+    Represents an activity log in the Splitwise application.
+    Attributes:
+        id (UUID): The unique identifier for the activity.
+        description (str): The description of the activity.
+        timestamp (datetime): The timestamp when the activity occurred.
+        user_id (UUID): The unique identifier for the user associated with the activity.
+        group_id (UUID): The unique identifier for the group associated with the activity.
+    """
+
+    __tablename__ = "activities"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    description = Column(Text, nullable=False)
+    timestamp = Column(DateTime, default=datetime.now(timezone.utc))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    group_id = Column(UUID(as_uuid=True), ForeignKey("groups.id"), nullable=True)
+
+    user = relationship("User")
+    group = relationship("Group")
