@@ -35,17 +35,3 @@ class UserSchema(BaseModel):
         and ensures attributes can be mapped from ORM objects.
         """
         from_attributes = True
-
-
-class DeleteUserSchema(BaseModel):
-    """
-    Schema for deleting a user.
-
-    This schema is used to validate the request payload when deleting a user. 
-    It ensures that the user ID is provided in the correct UUID format.
-
-    Attributes:
-        user_id (UUID): Unique identifier of the user to be deleted.
-    """
-    
-    user_id: UUID
