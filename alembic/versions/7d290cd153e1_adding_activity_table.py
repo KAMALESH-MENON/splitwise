@@ -46,7 +46,6 @@ def upgrade() -> None:
         type_=sa.Float(),
         existing_nullable=False,
     )
-    op.alter_column("expenses", "group_id", existing_type=sa.UUID(), nullable=True)
     op.alter_column(
         "expenses",
         "total_amount",
@@ -86,7 +85,6 @@ def downgrade() -> None:
         type_=sa.NUMERIC(),
         existing_nullable=False,
     )
-    op.alter_column("expenses", "group_id", existing_type=sa.UUID(), nullable=False)
     op.alter_column(
         "expense_splits",
         "amount_owed",
