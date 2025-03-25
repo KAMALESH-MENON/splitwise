@@ -41,3 +41,6 @@ class UserService:
                 raise ValueError("User not found")
 
             self.uow.user_repository.delete(id=user_id)
+
+
+
