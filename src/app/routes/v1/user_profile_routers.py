@@ -31,6 +31,7 @@ def edit_profile(
     Returns:
         UserSchema: Updated profile details.
     """
+
     name = name.strip() if name else None
     email = email.strip() if email else None
     phone = phone.strip() if phone else None
@@ -48,8 +49,9 @@ def edit_profile(
             user_id, validated_data.name, validated_data.email, validated_data.phone, profile_picture
         )
         return updated_user
+    except HTTPException as e:
+        raise e  
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid input: {str(e)}")
-    
