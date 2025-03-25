@@ -39,7 +39,7 @@ class AuthService:
             if not db_user or not AuthService.verify_password(
                 user.password, db_user.password
             ):
-                raise HTTPException(status_code=400, detail="Invalid email or password")
+                raise HTTPException(status_code=401, detail="Invalid email or password")
             access_token = AuthService.create_access_token({"user_id": str(db_user.id)})
             return LoginOutput(access_token=access_token, token_type="bearer")
 
