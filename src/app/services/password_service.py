@@ -20,7 +20,7 @@ class ChangePasswordService:
         """
         self.uow = uow
 
-    def change_user_password(self, user_id: UUID, old_password: str, new_password: str) -> None:
+    def change_user_password(self, user_id: UUID, current_password: str, new_password: str) -> None:
         """
         Changes the user's password.
 
@@ -50,7 +50,7 @@ class ChangePasswordService:
             if not user:
                 raise ValueError("User not found")
 
-            if old_password != user.password:
-                raise ValueError("Old password is incorrect")
+            if current_password != user.password:
+                raise ValueError("current password is incorrect")
 
             user.password = new_password

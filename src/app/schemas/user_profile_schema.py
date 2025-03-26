@@ -51,8 +51,7 @@ class ChangePasswordSchema(BaseModel):
         new_password (str): The user's new password, subject to additional validation.
     """
 
-    user_id: UUID
-    old_password: str = Field(..., min_length=8)
+    current_password: str = Field(..., min_length=8)
     new_password: str = Field(..., min_length=8)
 
     @field_validator("new_password")
