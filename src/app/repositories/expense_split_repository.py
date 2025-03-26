@@ -3,8 +3,8 @@ from uuid import UUID
 
 from sqlalchemy import asc, desc
 
-from app.models.data_models import ExpenseSplit
-from app.repositories.base_repository import BaseRepository
+from src.app.models.data_models import ExpenseSplit
+from src.app.repositories.base_repository import BaseRepository
 
 
 class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
@@ -30,9 +30,11 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         expense_id: Optional[UUID] = None,
         sort_by: Optional[str] = None,
         order: Optional[str] = "asc",
+        page: int = 1,
+        page_size: int = 10,
     ) -> List[ExpenseSplit]:
         """
-        Retrieve all ExpenseSplits matching the given filters.
+        Retrieve all ExpenseSplits matching the given filters with pagination.
 
         :parameter amount_owed: Amount owed in the ExpenseSplit
         :parameter split_type: Type of split
@@ -40,6 +42,8 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
         :parameter expense_id: UUID of the expense
         :parameter sort_by: Field to sort by
         :parameter order: Sort order ('asc' or 'desc')
+        :parameter page: Page number for pagination
+        :parameter page_size: Number of records per page
         :return: List of matching ExpenseSplit objects
         """
         query = self.session.query(ExpenseSplit)
@@ -57,6 +61,8 @@ class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):
                 query = query.order_by(asc(getattr(ExpenseSplit, sort_by)))
             else:
                 query = query.order_by(desc(getattr(ExpenseSplit, sort_by)))
+
+        query = query.offset((page - 1) * page_size).limit(page_size)
 
         return query.all()
 
