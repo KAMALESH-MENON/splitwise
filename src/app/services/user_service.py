@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
@@ -31,7 +31,7 @@ class AuthService:
             LoginOutput: A response containing the JWT access token and token type.
 
         Raises:
-            HTTPException: 400 Bad Request if authentication fails due to incorrect credentials.
+            HTTPException: 401 if authentication fails due to incorrect credentials.
         """
         with uow:
             user_repo = UserRepository(uow.session)
@@ -70,7 +70,7 @@ class AuthService:
         """
         to_encode = data.copy()
         expire_minutes = int(app_config["ACCESS_TOKEN_EXPIRE_MINUTES"])
-        expire = datetime.utcnow() + timedelta(minutes=expire_minutes)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
         to_encode.update({"exp": expire})
 
         to_encode["user_id"] = data["user_id"]
