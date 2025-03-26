@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import date
 from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, func
 
 from src.app.models.data_models import Expense
 from src.app.repositories.base_repository import BaseRepository
@@ -18,14 +18,16 @@ class ExpenseRepository(BaseRepository[Expense]):
         self,
         group_id: Optional[UUID] = None,
         total_amount: Optional[float] = None,
-        created_at: Optional[datetime] = None,
+        created_at: Optional[date] = None,
         paid_by: Optional[UUID] = None,
         expense_type: Optional[str] = None,
         sort_by: Optional[str] = None,
         order_by: str = "asc",
+        page: int = 1,
+        page_size: int = 10,
     ) -> List[Expense]:
         """
-        Retrieves all expenses with optional filters and sorting.
+        Retrieves all expenses with optional filters, sorting, and pagination.
 
         Parameters:
             group_id: Filter by group ID
@@ -35,9 +37,11 @@ class ExpenseRepository(BaseRepository[Expense]):
             expense_type: Filter by expense type
             sort_by: Field to sort by
             order_by: Sort by order ('asc' or 'desc')
+            page: Page number for pagination
+            page_size: Number of records per page
 
         Returns:
-        List of filtered and sorted expenses
+        List of filtered, sorted, and paginated expenses
         """
 
         query = self.session.query(Expense)
@@ -47,7 +51,7 @@ class ExpenseRepository(BaseRepository[Expense]):
         if total_amount:
             query = query.filter(Expense.total_amount == total_amount)
         if created_at:
-            query = query.filter(Expense.created_at == created_at)
+            query = query.filter(func.date(Expense.created_at) == created_at)
         if paid_by:
             query = query.filter(Expense.paid_by == paid_by)
         if expense_type:
@@ -56,6 +60,8 @@ class ExpenseRepository(BaseRepository[Expense]):
         if sort_by and hasattr(Expense, sort_by):
             column = getattr(Expense, sort_by)
             query = query.order_by(asc(column) if order_by == "asc" else desc(column))
+
+        query = query.offset((page - 1) * page_size).limit(page_size)
 
         return query.all()
 
