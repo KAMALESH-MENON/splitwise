@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from uuid import UUID
 
 from src.app.services.edit_profile_services import UserProfileService
@@ -11,7 +11,6 @@ router = APIRouter(tags=["User Profile Routes"])
 def view_profile(user_id: UUID, unit_of_work: UserUnitOfWork = Depends(get_user_uow)):
     """
     Retrieve the profile details of a user by their unique user ID.
-
     This endpoint fetches the profile information of a user from the database
     using the provided user ID. If the user does not exist, an HTTP 404 error is raised.
 
@@ -23,11 +22,7 @@ def view_profile(user_id: UUID, unit_of_work: UserUnitOfWork = Depends(get_user_
         UserSchema: A Pydantic model containing the user's profile details.
 
     Raises:
-        HTTPException: 
-            - 404 Not Found: If no user exists with the given ID.
+        HTTPException (404): If no user exists with the given ID.
     """
     user_profile_service = UserProfileService(unit_of_work)
-    try:
-        return user_profile_service.get_user_profile(user_id)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return user_profile_service.get_user_profile(user_id)
