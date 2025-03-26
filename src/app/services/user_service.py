@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -111,9 +111,9 @@ class UserService:
             )
             exp_timestamp = payload.get("exp")
             if exp_timestamp:
-                expiry_time = (
-                    datetime.utcfromtimestamp(exp_timestamp) - datetime.utcnow()
-                )
+                expiry_time = datetime.fromtimestamp(
+                    exp_timestamp, tz=timezone.utc
+                ) - datetime.now(timezone.utc)
                 redis_client.setex(
                     f"blacklist:{token}", int(expiry_time.total_seconds()), "revoked"
                 )
