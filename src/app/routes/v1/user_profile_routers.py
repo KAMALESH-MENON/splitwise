@@ -13,7 +13,7 @@ def change_password(user_id: UUID, data: ChangePasswordSchema, uow: UserUnitOfWo
 
     Args:
         user_id (UUID): The ID of the user whose password is being changed.
-        data (ChangePasswordSchema): Request payload containing old_password and new_password.
+        data (ChangePasswordSchema): Request payload containing current_password and new_password.
         uow (UserUnitOfWork): Dependency-injected unit of work for database operations.
 
     Returns:

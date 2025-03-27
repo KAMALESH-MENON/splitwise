@@ -7,7 +7,7 @@ class ChangePasswordService:
 
     This service performs the following operations:
     - Validates if the user exists.
-    - Checks if the provided old password matches the stored password.
+    - Checks if the provided current password matches the stored password.
     - Updates the password with a new one (without hashing).
     """
 
@@ -27,13 +27,13 @@ class ChangePasswordService:
         Steps:
         1. Retrieves the user from the database using the provided user ID.
         2. Validates if the user exists.
-        3. Compares the old password with the stored password.
+        3. Compares the current password with the stored password.
         4. Updates the password with the new one if validation passes.
         5. Commits the changes to the database.
 
         Args:
             user_id (UUID): The unique identifier of the user.
-            old_password (str): The current password that the user wants to change.
+            current_password (str): The current password that the user wants to change.
             new_password (str): The new password that the user wants to set.
 
         Raises:

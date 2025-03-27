@@ -47,7 +47,7 @@ class ChangePasswordSchema(BaseModel):
 
     Attributes:
         user_id (UUID): Unique identifier of the user requesting a password change.
-        old_password (str): The user's current password (must be at least 8 characters long).
+        current_password (str): The user's current password (must be at least 8 characters long).
         new_password (str): The user's new password, subject to additional validation.
     """
 
