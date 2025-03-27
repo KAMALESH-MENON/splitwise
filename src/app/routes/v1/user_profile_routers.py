@@ -8,7 +8,7 @@ from src.app.schemas.user_profile_schema import UserSchema, EditProfileSchema
 
 router = APIRouter(tags=["User Profile Routes"])
 
-@router.patch("/profile/edit", response_model=UserSchema)
+@router.patch("/profile/edit/{user_id}", response_model=UserSchema)
 def edit_profile(
     user_id: UUID,
     name: Optional[str] = Form(None),
