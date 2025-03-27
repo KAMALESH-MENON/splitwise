@@ -63,4 +63,4 @@ class UserUnitOfWork(BaseUnitOfWork):
         return self
 
 def get_user_uow(db: Session = Depends(get_db)) -> UserUnitOfWork:
-    return UserUnitOfWork(db)
+    return UserUnitOfWork(db)   
