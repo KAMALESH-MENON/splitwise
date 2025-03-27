@@ -6,7 +6,7 @@ from src.app.services.unit_of_work import get_user_uow, UserUnitOfWork
 
 router = APIRouter(tags=["User Profile Routes"])
 
-@router.delete("/delete-user/{user_id}")
+@router.delete("/users/{user_id}")
 def delete_user(
     user_id: UUID,
     data: DeleteUserSchema,
