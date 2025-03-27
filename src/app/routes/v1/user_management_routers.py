@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from redis import Redis
 
 from src.app.auth.auth import JWTBearer
-from src.app.config.redis import settings
+from src.app.config.settings import settings
 from src.app.schemas.user_schemas import LoginInput, LoginOutput
 from src.app.services.unit_of_work import UserUnitOfWork
 from src.app.services.user_service import UserService

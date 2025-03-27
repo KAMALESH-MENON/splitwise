@@ -1,6 +1,7 @@
 from os import path
 
 from dotenv.main import dotenv_values
+from pydantic_settings import BaseSettings
 
 
 def get_settings():
@@ -19,3 +20,15 @@ def get_settings():
 
 
 app_config = get_settings()
+
+
+class Settings(BaseSettings):
+    REDIS_HOST: str
+    REDIS_PORT: int
+
+    class Config:
+        env_file = ".env"
+        extra = "allow"
+
+
+settings = Settings()

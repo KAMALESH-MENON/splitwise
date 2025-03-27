@@ -3,8 +3,7 @@ from fastapi.security import HTTPBearer
 from jose import JWTError, jwt
 from redis import Redis
 
-from src.app.config.redis import settings
-from src.app.config.settings import app_config
+from src.app.config.settings import app_config, settings
 
 redis_client = Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0, decode_responses=True

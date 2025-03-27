@@ -6,8 +6,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from redis import Redis
 
-from src.app.config.redis import settings
-from src.app.config.settings import app_config
+from src.app.config.settings import app_config, settings
 from src.app.repositories.user_repository import UserRepository
 from src.app.schemas.user_schemas import LoginInput, LoginOutput, UserCreate
 from src.app.services.unit_of_work import UserUnitOfWork
