@@ -4,7 +4,6 @@ from src.app.config.database import get_db
 from src.app.repositories.user_repository import UserRepository
 from fastapi import Depends
 
-
 class BaseUnitOfWork(ABC):
     """A base class implementing the Unit of Work pattern for managing database transactions."""
 

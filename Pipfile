@@ -13,6 +13,7 @@ psycopg2-binary = "*"
 alembic = "*"
 pre-commit = "*"
 pydantic = {extras = ["email"], version = "*"}
+email-validator = "*"
 
 [dev-packages]
 
