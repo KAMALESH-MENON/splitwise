@@ -13,6 +13,16 @@ class ExpenseType(str, Enum):
     NON_EXPENSE_GROUP = "NON-EXPENSE GROUP"
 
 
+class SplitType(str, Enum):
+    """Enum for split types."""
+
+    EQUALLY = "EQUALLY"
+    UNEQUALLY = "UNEQUALLY"
+    BY_SHARES = "BY SHARES"
+    BY_PERCENTAGE = "BY PERCENTAGE"
+    BY_ADJUSTMENTS = "BY ADJUSTMENTS"
+
+
 class ExpenseBase(BaseModel):
     """Base schema for expenses."""
 
@@ -24,6 +34,7 @@ class ExpenseBase(BaseModel):
     description: Optional[str] = Field(default=None)
     group_id: Optional[UUID] = Field(default=None)
     paid_by: Optional[UUID] = Field(default=None)
+    expense_type: Optional[ExpenseType] = Field(default=None)
 
 
 class ExpenseUpdate(ExpenseBase):
@@ -34,4 +45,23 @@ class ExpenseUpdate(ExpenseBase):
         min_items=1,
         description="List of users participating in the expense.",
     )
-    expense_type: Optional[ExpenseType] = Field(default=None)
+    split_type: Optional[SplitType] = Field(
+        default=None,
+        description="Type of split (UNEQUALLY, EQUALLY, BY SHARES, BY PERCENTAGE, BY ADJUSTMENTS).",
+    )
+    amounts: Optional[List[Decimal]] = Field(
+        default=None,
+        description="List of amounts for each participant (for UNEQUALLY split).",
+    )
+    shares: Optional[List[int]] = Field(
+        default=None,
+        description="List of shares for each participant (for BY SHARES split).",
+    )
+    percentages: Optional[List[Decimal]] = Field(
+        default=None,
+        description="List of percentages for each participant (for BY PERCENTAGE split).",
+    )
+    adjustments: Optional[List[Decimal]] = Field(
+        default=None,
+        description="List of adjustments for each participant (for BY ADJUSTMENTS split).",
+    )
