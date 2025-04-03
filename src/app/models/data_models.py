@@ -11,6 +11,7 @@ from sqlalchemy import (
     ForeignKey,
     String,
     Text,
+    func,
 )
 from sqlalchemy.orm import declarative_base, relationship
 
@@ -113,6 +114,7 @@ class Expense(Base):
         expense_type (str): The type of the expense (GROUP, NON-EXPENSE GROUP).
         paid_by (UUID): The user who paid the expense.
         created_at (datetime): The timestamp when the expense was created.
+        updated_at (datetime): The timestamp when the expense was last updated.
         group (relationship): The group associated with the expense.
         payer (relationship): The user who paid the expense.
         splits (relationship): The splits associated with the expense.
@@ -128,6 +130,9 @@ class Expense(Base):
     )
     paid_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime, default=datetime.now(timezone.utc), onupdate=func.now(), nullable=True
+    )
     group = relationship("Group", back_populates="expenses")
     payer = relationship("User", back_populates="expenses")
     splits = relationship("ExpenseSplit", back_populates="expense")
@@ -143,6 +148,7 @@ class ExpenseSplit(Base):
         user_id (UUID): The unique identifier for the user.
         amount_owed (Float): The amount owed by the user.
         split_type (str): The type of the split (UNEQUALLY, EQUALLY, BY SHARES, BY PERCENTAGE, BY ADJUSTMENTS).
+        updated_at (datetime): The timestamp when the split was last updated.
         expense (relationship): The expense associated with the split.
         user (relationship): The user associated with the split.
         settlements (relationship): The settlements associated with the split.
@@ -163,6 +169,9 @@ class ExpenseSplit(Base):
             name="split_type_enum",
         ),
         nullable=False,
+    )
+    updated_at = Column(
+        DateTime, default=datetime.now(timezone.utc), onupdate=func.now(), nullable=True
     )
     expense = relationship("Expense", back_populates="splits")
     user = relationship("User", back_populates="expense_splits")

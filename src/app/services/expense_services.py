@@ -2,7 +2,11 @@ from uuid import UUID
 
 from fastapi import HTTPException
 
-from src.app.schemas.expense_schemas import ExpenseResponse, ExpenseType
+from src.app.schemas.expense_schemas import (
+    ExpenseResponse,
+    ExpenseSplitResponse,
+    ExpenseType,
+)
 from src.app.services.unit_of_work import ExpenseUnitOfWork
 
 
@@ -27,6 +31,17 @@ def get_expense_by_id(
         if not expense:
             raise HTTPException(status_code=404, detail="Expense not found")
 
+        splits = [
+            ExpenseSplitResponse(
+                id=split.id,
+                user_id=split.user_id,
+                amount_owed=split.amount_owed,
+                split_type=split.split_type,
+                updated_at=split.updated_at,
+            )
+            for split in expense.splits
+        ]
+
         return ExpenseResponse(
             id=expense.id,
             total_amount=expense.total_amount,
@@ -35,4 +50,5 @@ def get_expense_by_id(
             paid_by=expense.paid_by,
             created_at=expense.created_at,
             expense_type=ExpenseType(expense.expense_type),
+            splits=splits,
         )

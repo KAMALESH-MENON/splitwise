@@ -3,8 +3,8 @@ from uuid import UUID
 
 from sqlalchemy import asc, desc
 
-from app.models.data_models import ExpenseSplit
-from app.repositories.base_repository import BaseRepository
+from src.app.models.data_models import ExpenseSplit
+from src.app.repositories.base_repository import BaseRepository
 
 
 class ExpenseSplitRepository(BaseRepository[ExpenseSplit]):

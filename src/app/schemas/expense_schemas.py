@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -14,6 +14,16 @@ class ExpenseType(str, Enum):
     NON_EXPENSE_GROUP = "NON-EXPENSE GROUP"
 
 
+class ExpenseSplitResponse(BaseModel):
+    """Schema for viewing an expense split."""
+
+    id: UUID
+    user_id: UUID
+    amount_owed: Decimal
+    split_type: str
+    updated_at: Optional[datetime]
+
+
 class ExpenseResponse(BaseModel):
     """Schema for viewing an expense."""
 
@@ -24,3 +34,4 @@ class ExpenseResponse(BaseModel):
     paid_by: UUID
     created_at: datetime
     expense_type: ExpenseType
+    splits: List[ExpenseSplitResponse]
